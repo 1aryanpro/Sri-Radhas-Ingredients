@@ -4,6 +4,8 @@
     import { supabase } from "$lib/supabase.js";
     import { page } from "$app/state";
 
+    import QR from "@svelte-put/qr/img/QR.svelte";
+
     let db = $state([]);
 
     let auth = $state(false);
@@ -64,6 +66,7 @@
                 <th>Ingredients</th>
                 {#if auth}
                     <th></th>
+                    <th></th>
                 {/if}
             </tr>
         </thead>
@@ -81,6 +84,16 @@
                                 {item_name}
                                 {ingredients}
                                 {onUpdate}
+                            />
+                        </td>
+                        <td>
+                            <QR
+                                data={`ingredients.sriradhas.com/${id}`}
+                                moduleFill="black"
+                                backgroundFill="white"
+                                width="100"
+                                height="100"
+                                correction='L'
                             />
                         </td>
                     {/if}
