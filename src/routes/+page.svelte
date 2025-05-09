@@ -1,14 +1,8 @@
 <script>
-    import AuthModal from "$lib/components/AuthModal.svelte";
-    import ItemModal from "$lib/components/ItemModal.svelte";
     import { supabase } from "$lib/supabase.js";
     import { page } from "$app/state";
 
-    import QR from "@svelte-put/qr/img/QR.svelte";
-
     let db = $state([]);
-
-    let auth = $state(false);
 
     async function onUpdate() {
         let { data } = await supabase.from("Ingredients").select("*");
@@ -17,7 +11,7 @@
     onUpdate();
 
     let searchQuery = $state(page.url.searchParams.get("search"));
-    if (searchQuery == null) searchQuery = "";
+    if ((() => searchQuery)() == null) searchQuery = "";
 
     // Update the filtered list whenever the search query changes
     let filteredIngredients = $derived(
@@ -25,17 +19,7 @@
             item_name.toLowerCase().includes(searchQuery.toLowerCase()),
         ),
     );
-
-    async function checkLogin() {
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        auth = user != null;
-    }
-    checkLogin();
 </script>
-
-<AuthModal triggerText="Auth" onSubmit={checkLogin} />
 
 <div class="container">
     <div class="search-container">
@@ -46,17 +30,6 @@
             placeholder="Search items..."
             bind:value={searchQuery}
         />
-
-        {#if auth}
-            <div class="add">
-                <ItemModal
-                    triggerText="Add New"
-                    submitText="Create"
-                    item_name={searchQuery}
-                    {onUpdate}
-                />
-            </div>
-        {/if}
     </div>
 
     <table>
@@ -64,10 +37,6 @@
             <tr>
                 <th>Item</th>
                 <th>Ingredients</th>
-                {#if auth}
-                    <th></th>
-                    <th></th>
-                {/if}
             </tr>
         </thead>
         <tbody>
@@ -75,28 +44,6 @@
                 <tr>
                     <td>{item_name}</td>
                     <td>{ingredients}</td>
-                    {#if auth}
-                        <td>
-                            <ItemModal
-                                triggerText="Edit"
-                                submitText="Save Changes"
-                                {id}
-                                {item_name}
-                                {ingredients}
-                                {onUpdate}
-                            />
-                        </td>
-                        <td>
-                            <QR
-                                data={`ingredients.sriradhas.com/${id}`}
-                                moduleFill="black"
-                                backgroundFill="white"
-                                width="100"
-                                height="100"
-                                correction='L'
-                            />
-                        </td>
-                    {/if}
                 </tr>
             {/each}
         </tbody>
@@ -120,10 +67,6 @@
         display: flex;
         border-radius: 1rem;
         overflow: hidden;
-    }
-
-    .add {
-        margin-left: auto;
     }
 
     .icon {
@@ -167,9 +110,6 @@
         max-width: 50vw;
         border: 1px solid #ddd;
         padding: 0.75rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     td:nth-child(3) {
