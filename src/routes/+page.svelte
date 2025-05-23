@@ -5,7 +5,7 @@
     let db = $state([]);
 
     async function onUpdate() {
-        let { data } = await supabase.from("Ingredients").select("*");
+        let { data } = await supabase.from("Items").select("*");
         db = data.sort((a, b) => a.item_name.localeCompare(b.item_name));
     }
     onUpdate();
@@ -32,22 +32,12 @@
         />
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Ingredients</th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each filteredIngredients as { id, item_name, ingredients }}
-                <tr>
-                    <td>{item_name}</td>
-                    <td>{ingredients}</td>
-                </tr>
-            {/each}
-        </tbody>
-    </table>
+    {#each filteredIngredients as { id, item_name, ingredients }}
+        <div class="card">
+            <h2>{item_name}:</h2>
+            <p3>{ingredients}</p3>
+        </div>
+    {/each}
 </div>
 
 <style>
@@ -97,42 +87,25 @@
         background: #aaa;
     }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1rem 0;
-        font-size: 1rem;
-        text-align: left;
+    .card {
+        border: 2px solid #ddd;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        margin: 0.5rem 0;
     }
 
-    th,
-    td {
-        max-width: 50vw;
-        border: 1px solid #ddd;
-        padding: 0.75rem;
+    .card h2 {
+        margin-bottom: 0.5rem;
     }
 
-    td:nth-child(3) {
-        width: 5%;
-    }
-
-    th {
-        background-color: #f4f4f4;
-        font-weight: bold;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    @media (max-width: 600px) {
-        table {
-            font-size: 0.9rem;
+    @media(max-width: 600px) {
+        .container {
+            width: 95%;
         }
 
-        th,
-        td {
-            padding: 0.5rem;
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0;
         }
     }
 </style>

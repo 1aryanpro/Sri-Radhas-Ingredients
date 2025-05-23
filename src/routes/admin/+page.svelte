@@ -12,7 +12,7 @@
     let auth = $state(false);
 
     async function onUpdate() {
-        let { data } = await supabase.from("Ingredients").select("*");
+        let { data } = await supabase.from("Items").select("*");
         db = data
             .sort((a, b) => a.item_name.localeCompare(b.item_name))
             .map((i) => {
@@ -131,7 +131,8 @@
         display: none;
         grid-template-columns: repeat(2, 1fr);
         column-gap: 1rem;
-        width: 80%;
+        row-gap: 1rem;
+        width: 100%;
         margin: auto;
     }
 
@@ -141,8 +142,13 @@
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        padding: 0.5rem;
         margin: auto;
+        height: 1.5in;
+        width: 4in;
+    }
+
+    .label h1 {
+        width: 2.5in;
     }
 
     @media print {
@@ -219,7 +225,7 @@
     }
 
     td:nth-child(3) {
-        width: 5%;
+        width: 50%;
     }
 
     tr:nth-child(even) {

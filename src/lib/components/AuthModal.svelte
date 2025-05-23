@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import Modal from "./Modal.svelte";
 
-    const TABLE = "Ingredients";
+    const TABLE = "Items";
 
     let email = $state(""),
         password = $state("");
