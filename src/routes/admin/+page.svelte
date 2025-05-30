@@ -109,11 +109,13 @@
                 <h1>{item_name}</h1>
                 <QR
                     data={`ingredients.sriradhas.com/${id}`}
-                    moduleFill="black"
-                    backgroundFill="white"
+                    moduleFill="white"
+                    backgroundFill="#ff3b30"
                     width="100"
                     height="100"
                     correction="L"
+                    anchorInnerFill="white"
+                    anchorOuterFill="white"
                 />
             </div>
         {/if}
@@ -128,27 +130,28 @@
     }
 
     .print {
-        display: none;
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         column-gap: 1rem;
         row-gap: 1rem;
-        width: 100%;
-        margin: auto;
+        padding: 0.5rem;
+        background: #ff3b30;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     .label {
-        border: 2px solid black;
+        border: 4px solid white;
         border-radius: 1rem;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        margin: auto;
         height: 1.5in;
-        width: 4in;
+        color: white;
     }
 
     .label h1 {
-        width: 2.5in;
+        width: 2.25in;
     }
 
     @media print {
