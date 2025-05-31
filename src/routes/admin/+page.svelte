@@ -134,15 +134,9 @@
         grid-template-columns: repeat(2, 1fr);
         column-gap: 1rem;
         row-gap: 1rem;
-        padding: 0.5rem;
-        background: #ff3b30;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        font-size: 18px;
     }
 
     .label {
-        border: 4px solid white;
         border-radius: 1rem;
         display: flex;
         align-items: center;
@@ -150,6 +144,9 @@
         height: 1.5in;
         color: white;
         padding: 0 0.1in;
+        background: #ff3b30;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     .label h1 {
