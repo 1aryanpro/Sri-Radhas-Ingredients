@@ -2,7 +2,7 @@
     import { supabase } from "$lib/supabase";
     import Modal from "./Modal.svelte";
 
-    const TABLE = "Ingredients";
+    const TABLE = "Items";
 
     let {
         id = undefined,
@@ -19,7 +19,6 @@
             .map((item) => item.trim())
             .filter((item) => item !== "") // Remove empty items
             .join(", ");
-        console.log(ingredients); // Outputs: "tomato, onion, garlic, pepper"
 
         if (!id) await supabase.from(TABLE).insert({ item_name, ingredients });
         else

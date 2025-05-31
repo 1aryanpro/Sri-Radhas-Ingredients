@@ -138,6 +138,7 @@
         background: #ff3b30;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        font-size: 18px;
     }
 
     .label {
