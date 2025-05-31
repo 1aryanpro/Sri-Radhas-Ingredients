@@ -149,10 +149,11 @@
         justify-content: space-evenly;
         height: 1.5in;
         color: white;
+        padding: 0 0.1in;
     }
 
     .label h1 {
-        width: 2.25in;
+        width: 75%;
     }
 
     @media print {
