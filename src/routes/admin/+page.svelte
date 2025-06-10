@@ -42,8 +42,6 @@
         auth = user != null;
     }
     checkLogin();
-
-    $inspect(filteredIngredients);
 </script>
 
 <AuthModal triggerText="Admin" onSubmit={checkLogin} />
@@ -132,8 +130,8 @@
     .print {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        column-gap: 1rem;
-        row-gap: 1rem;
+        column-gap: 0.2in;
+        row-gap: 0.2in;
     }
 
     .label {
@@ -141,7 +139,7 @@
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        height: 1.5in;
+        height: 1.3in;
         color: white;
         padding: 0 0.1in;
         background: #ff3b30;
@@ -149,8 +147,11 @@
         print-color-adjust: exact;
     }
 
+    /* .label:nth-of-type(12) {} */
+
     .label h1 {
         width: 75%;
+        font-size: 0.3in;
     }
 
     @media print {
