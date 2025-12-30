@@ -75,11 +75,12 @@
                     class:active={filteredItems.length != 0}
                 />
                 {#if searchQuery.length >= 2}
-                    <i
-                        class="fa fa-circle-xmark"
+                    <button
                         onclick={() => (searchQuery = "")}
                         onmousedown={(e) => e.preventDefault()}
-                    ></i>
+                    >
+                        <i class="fa fa-circle-xmark"></i>
+                    </button>
                 {/if}
             </div>
         </div>
@@ -174,6 +175,7 @@
 
     img {
         width: 100%;
+        max-width: 400px;
         mix-blend-mode: darken;
         border-bottom: 2px solid #2d1b00;
     }
@@ -222,6 +224,10 @@
         margin-top: 5px;
     }
 
+    .card p {
+        text-align: left;
+    }
+
     span {
         display: none;
         align-items: center;
@@ -262,6 +268,7 @@
     .container {
         width: 60vw;
         margin: 0 auto 10px auto;
+        text-align: center;
     }
 
     .search-container {
@@ -277,21 +284,36 @@
         margin-top: 10px;
     }
 
-    .input-wrap i {
+    .input-wrap > i {
         position: absolute;
         top: 50%;
         color: black;
-        transform: translateY(-50%);
-    }
-
-    .input-wrap i:first-child {
+        transform: translatey(-50%);
         left: 10px;
         pointer-events: none;
     }
 
-    .input-wrap i:last-child {
+    .input-wrap button {
+        position: absolute;
+        top: 50%;
         right: 10px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        padding: 0;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .input-wrap button:hover {
+        background: none;
+    }
+
+    .input-wrap button i {
+        font-size: 1.1rem;
+        color: #666;
     }
 
     input {

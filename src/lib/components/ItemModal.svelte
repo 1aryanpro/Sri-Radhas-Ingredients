@@ -89,4 +89,16 @@
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
     }
+
+    @media (max-width: 720px) {
+        textarea {
+            font-size: 1rem;
+            height: 30vh;
+        }
+
+        input[type="text"],textarea {
+            width: 80vw;
+        }
+    }
+
 </style>

@@ -25,12 +25,33 @@
     let searchQuery = $state(page.url.searchParams.get("search"));
     if ((() => searchQuery)() == null) searchQuery = "";
 
-    let filteredIngredients = $derived(
-        db
-            .filter(({ item_name }) =>
-                item_name.toLowerCase().includes(searchQuery.toLowerCase()),
-            )
-    );
+    const filteredItems = $derived.by(() => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return db;
+
+        const scored = db
+            .map((item) => {
+                const name = item.item_name ?? "";
+                const n = name.toLowerCase();
+
+                let score = Infinity;
+                const idx = n.indexOf(q);
+                if (idx === 0)
+                    score = 0; // starts with
+                else if (idx > 0)
+                    score = 1; // contains
+                else score = 2; // no match
+
+                return { item, score, idx, nameLen: n.length };
+            })
+            .filter((x) => x.score !== 2)
+            .sort(
+                (a, b) =>
+                    a.score - b.score || a.idx - b.idx || a.nameLen - b.nameLen,
+            );
+
+        return scored.map((x) => x.item);
+    });
 
     async function checkLogin() {
         const {
@@ -42,10 +63,10 @@
 
     async function toggleFlag(id, i, flag_id) {
         let flags = ["is_vegan", "is_gf", "is_jain"];
-        let flag = flags[flag_id]
+        let flag = flags[flag_id];
 
-        let curr = filteredIngredients[i][flag];
-        filteredIngredients[i][flag] = !curr;
+        let curr = filteredItems[i][flag];
+        filteredItems[i][flag] = !curr;
 
         let obj = {};
         obj[flag] = !curr;
@@ -57,7 +78,9 @@
 <AuthModal triggerText="Admin" onSubmit={checkLogin} />
 <div class="container">
     <div class="search-container">
-        <label class="icon" for="search">🔍</label>
+        <label class="icon" for="search"
+            ><i class="fa fa-magnifying-glass"></i></label
+        >
         <input
             type="text"
             name="search"
@@ -67,7 +90,7 @@
 
         <div class="add">
             <ItemModal
-                triggerText="Add New"
+                triggerText="New"
                 submitText="Create"
                 item_name={searchQuery}
                 {onUpdate}
@@ -84,7 +107,7 @@
                 <th></th>
             </tr>
         </thead><tbody>
-            {#each filteredIngredients as { id, item_name, ingredients, is_vegan, is_gf, is_jain }, i}
+            {#each filteredItems as { id, item_name, ingredients, is_vegan, is_gf, is_jain }, i}
                 <tr>
                     <td>{item_name}</td>
                     <td>{ingredients}</td>
@@ -164,7 +187,7 @@
     }
 
     .container {
-        width: 60vw;
+        width: 90vw;
         margin: 5vh auto 0 auto;
     }
 
@@ -222,21 +245,68 @@
         padding: 0.75rem;
     }
 
-    td:nth-child(2) {
-        width: 50%;
+    td {
+        white-space: nowrap;
+        overflow: hidden;
     }
 
     tr:nth-child(even) {
         background-color: #f9f9f9;
     }
 
-    @media (max-width: 600px) {
-        table {
-            font-size: 0.9rem;
+    @media (max-width: 720px) {
+        table,
+        thead,
+        tbody,
+        tr,
+        th,
+        td {
+            display: block;
         }
 
-        td {
-            padding: 0.5rem;
+        thead {
+            display: none; /* hide header on mobile */
+        }
+
+        tbody tr {
+            border: 2px solid #000;
+            border-radius: 16px;
+            padding: 0.75rem;
+            background-color: #f9f9f9;
+            margin: 0.75rem 0;
+        }
+
+        tbody td {
+            border: none;
+            padding: 0;
+            margin-bottom: 0.25rem;
+        }
+
+        tbody td:first-child {
+            font-size: 1.25rem;
+            overflow: unset;
+            max-width: none;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.35;
+        }
+
+        tbody td:nth-child(3), tbody td:nth-child(4) {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        /* Make ingredients wrap nicely */
+        tbody td:nth-child(2) {
+            max-width: none;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.35;
+        }
+
+        .badges {
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
     }
 </style>

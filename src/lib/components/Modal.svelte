@@ -44,17 +44,25 @@
         justify-content: center;
         align-items: center;
     }
+
     div.backdrop {
         position: absolute;
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.4);
     }
+
     div.content-wrapper {
         z-index: 10;
         border-radius: 0.3rem;
         background-color: white;
         overflow: hidden;
         padding: 1rem;
+    }
+
+    @media (max-width: 720px) {
+        .content-wrapper {
+            width: 100%;
+        }
     }
 </style>
