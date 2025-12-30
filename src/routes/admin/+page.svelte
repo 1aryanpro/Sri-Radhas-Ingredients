@@ -22,8 +22,6 @@
     }
     onUpdate();
 
-    let printFilter = $state(false);
-
     let searchQuery = $state(page.url.searchParams.get("search"));
     if ((() => searchQuery)() == null) searchQuery = "";
 
@@ -32,7 +30,6 @@
             .filter(({ item_name }) =>
                 item_name.toLowerCase().includes(searchQuery.toLowerCase()),
             )
-            .filter(({ print }) => (printFilter ? print : true)),
     );
 
     async function checkLogin() {
@@ -42,6 +39,19 @@
         auth = user != null;
     }
     checkLogin();
+
+    async function toggleFlag(id, i, flag_id) {
+        let flags = ["is_vegan", "is_gf", "is_jain"];
+        let flag = flags[flag_id]
+
+        let curr = filteredIngredients[i][flag];
+        filteredIngredients[i][flag] = !curr;
+
+        let obj = {};
+        obj[flag] = !curr;
+
+        await supabase.from("Items").update(obj).eq("id", id);
+    }
 </script>
 
 <AuthModal triggerText="Admin" onSubmit={checkLogin} />
@@ -68,22 +78,35 @@
     <table>
         <thead>
             <tr>
-                <th><input type="checkbox" bind:checked={printFilter} />🖨️</th>
                 <th>Item</th>
                 <th>Ingredients</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead><tbody>
-            {#each filteredIngredients as { id, item_name, ingredients }, i}
+            {#each filteredIngredients as { id, item_name, ingredients, is_vegan, is_gf, is_jain }, i}
                 <tr>
-                    <td
-                        ><input
-                            type="checkbox"
-                            bind:checked={filteredIngredients[i].print}
-                        /></td
-                    >
                     <td>{item_name}</td>
                     <td>{ingredients}</td>
+                    <td>
+                        <div class="badges">
+                            <span
+                                onclick={() => toggleFlag(id, i, 0)}
+                                class:active={is_vegan}
+                                class="vegan">V</span
+                            >
+                            <span
+                                onclick={() => toggleFlag(id, i, 1)}
+                                class:active={is_gf}
+                                class="gluten">G</span
+                            >
+                            <span
+                                onclick={() => toggleFlag(id, i, 2)}
+                                class:active={is_jain}
+                                class="jain">J</span
+                            >
+                        </div>
+                    </td>
                     <td>
                         <ItemModal
                             triggerText="Edit"
@@ -100,26 +123,6 @@
     </table>
 </div>
 
-<div class="print">
-    {#each filteredIngredients as { id, item_name, ingredients, print }}
-        {#if print}
-            <div class="label">
-                <h1>{item_name}</h1>
-                <QR
-                    data={`ingredients.sriradhas.com/${id}`}
-                    moduleFill="white"
-                    backgroundFill="#ff3b30"
-                    width="100"
-                    height="100"
-                    correction="L"
-                    anchorInnerFill="white"
-                    anchorOuterFill="white"
-                />
-            </div>
-        {/if}
-    {/each}
-</div>
-
 <style>
     :global(*) {
         margin: 0;
@@ -127,41 +130,37 @@
         font-family: sans-serif;
     }
 
-    .print {
-        display: none;
-        grid-template-columns: repeat(2, 1fr);
-        column-gap: 0.2in;
-        row-gap: 0.2in;
-    }
-
-    .label {
-        border-radius: 1rem;
-        display: flex;
+    span {
+        display: inline-flex;
         align-items: center;
-        justify-content: space-evenly;
-        height: 1.2in;
-        color: white;
-        padding: 0 0.1in;
-        background: #ff3b30;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+
+        background: #aaa;
+        color: #fff;
+
+        font-weight: 600;
     }
 
-    .label:nth-of-type(12n) {margin-bottom: 1.154in;}
-
-    .label h1 {
-        width: 75%;
-        font-size: 0.3in;
+    .badges {
+        display: flex;
+        gap: 8px; /* space between circles */
+        align-items: center;
     }
 
-    @media print {
-        .container {
-            display: none;
-        }
+    .vegan.active {
+        background: saddlebrown;
+    }
 
-        .print {
-            display: grid;
-        }
+    .gluten.active {
+        background: goldenrod;
+    }
+
+    .jain.active {
+        background: darkgreen;
     }
 
     .container {
@@ -195,10 +194,6 @@
         border: none;
     }
 
-    input[type="checkbox"] {
-        width: auto;
-    }
-
     :global(button) {
         padding: 0.5rem;
         font-size: 1rem;
@@ -227,7 +222,7 @@
         padding: 0.75rem;
     }
 
-    td:nth-child(3) {
+    td:nth-child(2) {
         width: 50%;
     }
 
