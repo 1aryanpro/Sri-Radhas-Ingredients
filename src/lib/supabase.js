@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { PUBLIC_SRIRADHAS_SUPABASE_URL, PUBLIC_SRIRADHAS_SUPABASE_PUBLISHABLE_KEY } from '$env/static/public';
 
-const supabaseUrl = 'https://qgmuevdhevemyzomadtw.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(PUBLIC_SRIRADHAS_SUPABASE_URL, PUBLIC_SRIRADHAS_SUPABASE_PUBLISHABLE_KEY);
 
